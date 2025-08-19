@@ -1,0 +1,31 @@
+// #import "GL";
+
+// #load "misc.touy";
+// #load "checks.touy";
+
+sinf :: (r : f32) -> f32 {
+
+}
+
+square :: (x : int) -> int {
+	return x * x;
+}
+
+dummy := () -> void {
+
+}
+
+dummy2 : () -> void = dummy;
+
+callback :: (fn: () -> void) {
+
+}
+
+main :: () {
+	a := 0;
+	b : ' int = 'a;
+	c : int = ^a;
+	d : [] int;
+	e : [] ' int;
+	return 0;
+}
