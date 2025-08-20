@@ -131,8 +131,8 @@ static const char *const TOKEN_STRINGS[] = {
 	[TOKEN_KEYWORD_S32] = "s32",
 	[TOKEN_KEYWORD_S64] = "s64",
 
-	[TOKEN_KEYWORD_FLOAT32] = "float32",
-	[TOKEN_KEYWORD_FLOAT64] = "float64",
+	[TOKEN_KEYWORD_FLOAT32] = "f32",
+	[TOKEN_KEYWORD_FLOAT64] = "f64",
 
 	[TOKEN_KEYWORD_ENUM] = "enum",
 	[TOKEN_KEYWORD_STRUCT] = "struct",
@@ -475,17 +475,23 @@ int main(void) {
 			fprintf(stderr, "failed to parse token at %d:%d\n", t.l0, t.c0);
 			break;
 		} else if(t.type == TOKEN_IDENTIFIER) {
-			printf("%d:%d:" SV_FMT "\n", t.l0, t.c0, SV_ARG(t.str));
+			// printf("%d:%d:" SV_FMT "\n", t.l0, t.c0, SV_ARG(t.str));
+			printf("%d\t%d\tIdentifier\t" SV_FMT "\n", t.l0, t.c0, SV_ARG(t.str));
 		} else if(t.type == TOKEN_NUMBER) {
-			printf("%d:%d:number(%ld)\n", t.l0, t.c0, t.integer_value);
+			// printf("%d:%d:number(%ld)\n", t.l0, t.c0, t.integer_value);
+			printf("%d\t%d\tNumber    \t%ld\n", t.l0, t.c0, t.integer_value);
 		} else if(t.type > TOKEN_STRING && t.type < TOKEN_KEYWORD_VOID) {
-			printf("%d:%d:(%s)\n", t.l0, t.c0, TOKEN_STRINGS[t.type]);
+			// printf("%d:%d:(%s)\n", t.l0, t.c0, TOKEN_STRINGS[t.type]);
+			printf("%d\t%d\t%s\n", t.l0, t.c0, TOKEN_STRINGS[t.type]);
 		} else if(t.type >= TOKEN_KEYWORD_VOID && t.type < TOKEN_EOF) {
-			printf("%d:%d:keyword(%s)\n", t.l0, t.c0, TOKEN_STRINGS[t.type]);
+			// printf("%d:%d:keyword(%s)\n", t.l0, t.c0, TOKEN_STRINGS[t.type]);
+			printf("%d\t%d\t%s\n", t.l0, t.c0, TOKEN_STRINGS[t.type]);
 		} else if(t.type < 256) {
-			printf("%d:%d:%c\n", t.l0, t.c0, t.type);
+			// printf("%d:%d:%c\n", t.l0, t.c0, t.type);
+			printf("%d\t%d\t%c\n", t.l0, t.c0, t.type);
 		} else {
-			printf("%d:%d:%d\n", t.l0, t.c0, t.type);
+			// printf("%d:%d:%d\n", t.l0, t.c0, t.type);
+			printf("%d\t%d\t%d\n", t.l0, t.c0, t.type);
 		}
 		t = consume_token(&tk);
 	}
