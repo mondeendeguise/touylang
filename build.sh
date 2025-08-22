@@ -2,4 +2,4 @@
 
 set -xe
 
-cc main.c -o touy -Wall -Wextra -pedantic -ggdb -O2
+cc main.c lexer.c -o touy -Wall -Wextra -pedantic -ggdb -O2
