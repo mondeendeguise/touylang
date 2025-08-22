@@ -133,6 +133,15 @@ static const char *const TOKEN_STRINGS[] = {
 	[TOKEN_KEYWORD_RETURN] = "return",
 };
 
+enum token_number_flags {
+	TOKEN_NUMBER_FLAG_MIN_8_BIT  = 1,
+	TOKEN_NUMBER_FLAG_MIN_16_BIT = 2,
+	TOKEN_NUMBER_FLAG_MIN_32_BIT = 4,
+	TOKEN_NUMBER_FLAG_MIN_64_BIT = 8,
+	TOKEN_NUMBER_FLAG_SIGNED     = 16,
+	TOKEN_NUMBER_FLAG_FLOAT      = 32,
+};
+
 struct token {
 	uint32_t type;
 

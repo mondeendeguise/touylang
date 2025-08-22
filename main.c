@@ -27,7 +27,12 @@ int main(void) {
 			printf("%d\t%d\tIdentifier\t" SV_FMT "\n", t.l0, t.c0, SV_ARG(t.str));
 		} else if(t.type == TOKEN_NUMBER) {
 			// printf("%d:%d:number(%ld)\n", t.l0, t.c0, t.integer_value);
-			printf("%d\t%d\tNumber    \t%ld\n", t.l0, t.c0, t.integer_value);
+			if(t.number_flags & TOKEN_NUMBER_FLAG_FLOAT) {
+				// TODO: figure out why float32_value keeps being 0 here
+				printf("%d\t%d\tFloat     \t%f\n", t.l0, t.c0, t.float64_value);
+			} else {
+				printf("%d\t%d\tInteger   \t%ld\n", t.l0, t.c0, t.integer_value);
+			}
 		} else if(t.type > TOKEN_STRING && t.type < TOKEN_KEYWORD_VOID) {
 			// printf("%d:%d:(%s)\n", t.l0, t.c0, TOKEN_STRINGS[t.type]);
 			printf("%d\t%d\t%s\n", t.l0, t.c0, TOKEN_STRINGS[t.type]);

@@ -8,9 +8,9 @@
 #include <string.h>
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 // TODO: bounds check buffer
-// TODO: handle comments
 struct token get_token(const char *p, uint64_t *offset, int32_t *line, int32_t *col) {
 	struct token t = {0};
 
@@ -24,6 +24,7 @@ struct token get_token(const char *p, uint64_t *offset, int32_t *line, int32_t *
 		++(*offset);
 	}
 
+	// TODO: decide whether line, col should start at 0 or 1 internally
 	t.l0 = (*line) + 1;
 	t.c0 = (*col) + 1;
 
@@ -45,7 +46,7 @@ struct token get_token(const char *p, uint64_t *offset, int32_t *line, int32_t *
 
 		// Check for a keyword
 		for(size_t i = TOKEN_KEYWORD_VOID; i < TOKEN_EOF; ++i) {
-			if(strncmp(t.str.items, TOKEN_STRINGS[i], MIN(t.str.count, strlen(TOKEN_STRINGS[i]))) == 0) {
+			if(strncmp(t.str.items, TOKEN_STRINGS[i], MAX(t.str.count, strlen(TOKEN_STRINGS[i]))) == 0) {
 				t.type = i;
 				break;
 			}
@@ -55,13 +56,24 @@ struct token get_token(const char *p, uint64_t *offset, int32_t *line, int32_t *
 	}
 
 	// Check for a number
-	// TODO: check signedness, precision, base, etc.
+	// TODO: check precision, base
 	if(isdigit(*(p + *offset))) {
 		t.type = TOKEN_NUMBER;
 		t.str.count = 0;
 		t.str.items = p + *offset;
 
-		while(isdigit(*(p + *offset))) {
+		int is_float = 0;
+		while(isdigit(*(p + *offset)) || *(p + *offset) == '.') {
+			if(*(p + *offset) == '.') {
+				if(is_float) {
+					// TODO: better error handling
+					//       print filename
+					fprintf(stderr, "filename:%d:%d: unexpected '.'\n", *line+1, *col+1);
+					t.type = TOKEN_ERROR;
+					return t;
+				}
+				is_float = 1;
+			}
 			++t.str.count;
 			++(*col);
 			++(*offset);
@@ -74,7 +86,18 @@ struct token get_token(const char *p, uint64_t *offset, int32_t *line, int32_t *
 		memcpy(tmp, t.str.items, t.str.count);
 		tmp[t.str.count] = '\0';
 
-		t.integer_value = atol(tmp);
+		// TODO: more robust number flags/information tracking
+		if(is_float) {
+			t.number_flags |= TOKEN_NUMBER_FLAG_FLOAT;
+			t.float32_value = strtof(tmp, NULL);
+			t.float64_value = strtod(tmp, NULL);
+		} else {
+			t.integer_value = atol(tmp);
+			if(t.integer_value > UINT8_MAX) t.number_flags |= TOKEN_NUMBER_FLAG_MIN_8_BIT;
+			if(t.integer_value > UINT16_MAX) t.number_flags |= TOKEN_NUMBER_FLAG_MIN_16_BIT;
+			if(t.integer_value > UINT32_MAX) t.number_flags |= TOKEN_NUMBER_FLAG_MIN_32_BIT;
+			if(t.integer_value > UINT64_MAX) t.number_flags |= TOKEN_NUMBER_FLAG_MIN_64_BIT;
+		}
 
 		free(tmp);
 
@@ -157,6 +180,7 @@ struct token get_token(const char *p, uint64_t *offset, int32_t *line, int32_t *
 				break;
 
 			default:
+				// TODO: add string token type
 				t.type = c;
 				break;
 			}
