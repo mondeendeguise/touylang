@@ -3,6 +3,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// TODO: store tokens(?) for AST construction
+//
+//    A: do one pass of all the tokens in the file to get a count,
+//       allocate a buffer, then rewind to do a second pass where we actually
+//       store the tokens
+//
+//    B: do one pass with a dynamically resizing buffer of tokens
+//       maybe after reaching EOF, dealloc unused memory? not necessary though
+
+// TODO: codegen
+
 // TODO: read file from argv
 int main(void) {
 	struct lexer l = {0};

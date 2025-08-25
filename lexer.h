@@ -170,10 +170,13 @@ struct lexer {
 
 	struct token *tokens;
 	size_t token_count;
+	size_t token_current;
 };
 
 struct token get_token(const char *p, uint64_t *offset, int32_t *line, int32_t *col);
 struct token peek_token(struct lexer *l);
 struct token consume_token(struct lexer *l);
+
+void token_error(struct token t, int32_t line, int32_t col, const char *fmt, ...);
 
 #endif // _LEXER_H

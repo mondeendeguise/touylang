@@ -1,6 +1,8 @@
 #include "lexer.h"
+#include "string_view.h"
 
 #include <ctype.h>
+#include <stdarg.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -68,7 +70,8 @@ struct token get_token(const char *p, uint64_t *offset, int32_t *line, int32_t *
 				if(is_float) {
 					// TODO: better error handling
 					//       print filename
-					fprintf(stderr, "filename:%d:%d: unexpected '.'\n", *line+1, *col+1);
+					token_error(t, *line+1, *col+1, "error: too many decimal points in number\n");
+					// fprintf(stderr, "FILENAME:%d:%d: lex error: too many decimal points in number\n", *line+1, *col+1);
 					t.type = TOKEN_ERROR;
 					return t;
 				}
@@ -304,4 +307,14 @@ struct token peek_token(struct lexer *l) {
 
 struct token consume_token(struct lexer *l) {
 	return get_token(l->buffer, &l->offset, &l->line, &l->col);
+}
+
+// TODO: print filename in error message
+// TODO: print line with error, highlight location of error
+void token_error(struct token t, int32_t line, int32_t col, const char *fmt, ...) {
+	fprintf(stderr, "%d:%d: ", line, col);
+	va_list args;
+	va_start(args, fmt);
+	vfprintf(stderr, fmt, args);
+	va_end(args);
 }

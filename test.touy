@@ -1,4 +1,4 @@
-// #import "GL";
+#import "GL";
 
 // #load "misc.touy";
 // #load "checks.touy";
@@ -11,7 +11,7 @@ int3 : int = 256;
 float1 : f32 = 1.0;
 float2 : f64 = 0.5;
 float3 : f32 = 1.5;
-float4 : f32 = 0.5.1;
+// float4 : f32 = 0.5.1;
 
 sinf :: (r : f32) -> f32 {
 
