@@ -184,6 +184,7 @@ struct token get_token(const char *p, uint64_t *offset, int32_t *line, int32_t *
 
 			default:
 				// TODO: add string token type
+				// TODO: figure out what ^ this is referring to
 				t.type = c;
 				break;
 			}
@@ -279,10 +280,29 @@ struct token get_token(const char *p, uint64_t *offset, int32_t *line, int32_t *
 	case '>':
 
 	case '\"':
+		t.type = TOKEN_STRING;
+		t.str.items = p + *offset + 1;
+		t.str.count = 0;
+
 		++(*offset);
 		++(*col);
-		t.type = TOKEN_ERROR;
-		fprintf(stderr, "unhandled token: %c\n", c);
+
+		while(*(p + *offset) != '\"') {
+			if(*(p + *offset) == '\n') {
+				t.type = TOKEN_ERROR;
+				token_error(t, *line+1, *col+1, "missing \"\n");
+				return t;
+			}
+			++(*offset);
+			++(*col);
+			++t.str.count;
+		}
+
+		t.c1 = *col;
+
+		++(*offset);
+		++(*col);
+
 		break;
 
 	default:

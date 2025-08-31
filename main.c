@@ -36,6 +36,8 @@ int main(void) {
 		} else if(t.type == TOKEN_IDENTIFIER) {
 			// printf("%d:%d:" SV_FMT "\n", t.l0, t.c0, SV_ARG(t.str));
 			printf("%d\t%d\tIdentifier\t" SV_FMT "\n", t.l0, t.c0, SV_ARG(t.str));
+		} else if(t.type == TOKEN_STRING) {
+			printf("%d\t%d\tString    \t" SV_FMT "\n", t.l0, t.c0, SV_ARG(t.str));
 		} else if(t.type == TOKEN_NUMBER) {
 			// printf("%d:%d:number(%ld)\n", t.l0, t.c0, t.integer_value);
 			if(t.number_flags & TOKEN_NUMBER_FLAG_FLOAT) {
